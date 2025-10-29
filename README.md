@@ -136,9 +136,7 @@
 
 <div class="page">
   <header class="brand">
-    <div class="title">💀Halloween Trivia💀 — <span style="color:var(--accent)">Multiple Choice</span></
-  </header>
-
+    <div class="title">💀Halloween Trivia💀 — <span style="color:var(--accent)">Multiple Choice</span>
   <div class="bar">
     <div>Answer all 5.</div>
     <div class="score" id="score">Score: 0/5</div>
