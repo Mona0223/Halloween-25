@@ -146,7 +146,7 @@
   </div>
 
   <section class="quiz" id="quiz">
-    <h2>🎬 Famous Movies — 5 Questions</h2>
+    <h2>🩸Do You Want To Play A Game!🩸— 5 Questions</h2>
     <p class="sub">Choose an option, then **Check Answer**. Correct answers add to your score. You can retry until you nail it — but you only score once per question.</p>
     <div class="qa" id="qa"></div>
   </section>
