@@ -365,5 +365,3 @@ renderQuiz();
 bindInteractions();
 refreshBlood();
 </script>
-</body>
-</html>
