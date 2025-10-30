@@ -277,7 +277,20 @@ function bindInteractions(){
         // lock options
         document.querySelectorAll(`input[name="q${idx}"]`).forEach(r=>r.disabled=true);
         // score once
-        if(!scored[idx]){ scored[idx] = true; score++; updateScore(); }
+        if(!scored[idx]){
+  scored[idx] = true;
+  score++;
+  updateScore();
+  pulseScore(); // <- new
+}
+function pulseScore(){
+  scoreEl.classList.remove('pulse'); // reset if spamming corrects quickly
+  // force reflow so the animation can restart cleanly
+  void scoreEl.offsetWidth;
+  scoreEl.classList.add('pulse');
+  // optional: remove the class after animation ends
+  setTimeout(()=>scoreEl.classList.remove('pulse'), 1000);
+}
         audioReveal.currentTime = 0; audioReveal.play().catch(()=>{});
       } else {
         res.innerHTML = `<span class="wrong">Not quite. Try again.</span>`;
