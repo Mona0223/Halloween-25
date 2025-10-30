@@ -150,8 +150,7 @@
   </section>
 
   <footer>
-    <div class="foot-sig">Mona’s Productivity Suite — Halloween Edition</div>
-    <div style="opacity:.75">Print → Save as PDF (Background graphics on) for a slick host copy.</div>
+    <div class="foot-sig">Happy Halloween 2025</div>
   </footer>
 </div>
 
