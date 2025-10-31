@@ -153,7 +153,6 @@
 
   <footer>
     <div class="foot-sig">Happy Halloween</div>
-    <div style="opacity:.75">Print → Save as PDF (Background graphics on) for a slick host copy.</div>
   </footer>
 </div>
 
