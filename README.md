@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -136,21 +137,24 @@
 
 <div class="page">
   <header class="brand">
-    <div class="title">💀Halloween Trivia💀 — <span style="color:var(--accent)">Multiple Choice</span>
+    <div class="title">💀Halloween 2025💀 — <span style="color:var(--accent)">Multiple Choice</span></div>
+  </header>
+
   <div class="bar">
-    <div>Answer all 5.</div>
+    <div>Answer all 5 questions</div>
     <div class="score" id="score">Score: 0/5</div>
     <button class="reset" id="resetBtn">Reset Quiz</button>
   </div>
 
   <section class="quiz" id="quiz">
-    <h2>🩸Do You Want To Play A Game!🩸— 5 Questions</h2>
+    <h2>🩸DO YOU WANT TO PLAY A GAME?🩸</h2>
     <p class="sub">Choose an option, then **Check Answer**. Correct answers add to your score. You can retry until you nail it — but you only score once per question.</p>
     <div class="qa" id="qa"></div>
   </section>
 
   <footer>
-    <div class="foot-sig">Happy Halloween 2025</div>
+    <div class="foot-sig">Happy Halloween</div>
+    <div style="opacity:.75">Print → Save as PDF (Background graphics on) for a slick host copy.</div>
   </footer>
 </div>
 
@@ -277,21 +281,14 @@ function bindInteractions(){
         // lock options
         document.querySelectorAll(`input[name="q${idx}"]`).forEach(r=>r.disabled=true);
         // score once
-        if(!scored[idx]){
-  scored[idx] = true;
-  score++;
-  updateScore();
-  pulseScore(); // <- new
-}
-reEl.classList.remove('pulse'), 1000);
-}
+        if(!scored[idx]){ scored[idx] = true; score++; updateScore(); }
         audioReveal.currentTime = 0; audioReveal.play().catch(()=>{});
       } else {
         res.innerHTML = `<span class="wrong">Not quite. Try again.</span>`;
       }
     });
   });
-}
+
   resetBtn.addEventListener('click',()=>{
     score = 0; scored = Array(quiz.length).fill(false); updateScore();
     renderQuiz(); bindInteractions();
@@ -371,3 +368,5 @@ renderQuiz();
 bindInteractions();
 refreshBlood();
 </script>
+</body>
+</html>
