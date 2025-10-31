@@ -283,13 +283,7 @@ function bindInteractions(){
   updateScore();
   pulseScore(); // <- new
 }
-function pulseScore(){
-  scoreEl.classList.remove('pulse'); // reset if spamming corrects quickly
-  // force reflow so the animation can restart cleanly
-  void scoreEl.offsetWidth;
-  scoreEl.classList.add('pulse');
-  // optional: remove the class after animation ends
-  setTimeout(()=>scoreEl.classList.remove('pulse'), 1000);
+reEl.classList.remove('pulse'), 1000);
 }
         audioReveal.currentTime = 0; audioReveal.play().catch(()=>{});
       } else {
