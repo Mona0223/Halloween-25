@@ -159,7 +159,125 @@
 <!-- Audio -->
 <audio id="audio-reveal" preload="none" crossorigin="anonymous"></audio>
 <audio id="audio-whisper" preload="none" crossorigin="anonymous"></audio>
+/* ===== WebAudio: no-hosting, iOS-friendly ===== */
+let AC = window.AudioContext || window.webkitAudioContext;
+let ctx = null;
+let masterGain, whisperGain, whisperStarted = false;
 
+function ensureCtx(){
+  if (ctx) return;
+  ctx = new AC();
+  masterGain = ctx.createGain();
+  masterGain.gain.value = 0.9;
+  masterGain.connect(ctx.destination);
+
+  whisperGain = ctx.createGain();
+  whisperGain.gain.value = 0.0;             // start muted
+  whisperGain.connect(masterGain);
+}
+
+async function unlockAudioCtx(){
+  ensureCtx();
+  try { await ctx.resume(); } catch(e) {}
+  if (!whisperStarted) startWhisper();       // begin ambient once
+  fadeWhisperTo(0.22, 800);                  // gentle fade in
+}
+
+function fadeWhisperTo(target, ms){
+  const g = whisperGain.gain;
+  const now = ctx.currentTime;
+  g.cancelScheduledValues(now);
+  g.setValueAtTime(g.value, now);
+  g.linearRampToValueAtTime(target, now + ms/1000);
+}
+
+/* ---- Whisper ambience (filtered noise + LFO) ---- */
+function startWhisper(){
+  whisperStarted = true;
+  const bufferSize = 2 * ctx.sampleRate;     // ~2 seconds
+  const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = noiseBuffer.getChannelData(0);
+  for (let i=0; i<bufferSize; i++) {
+    // Smooth-ish noise: average with previous sample
+    const prev = i ? data[i-1] : 0;
+    data[i] = (prev*0.98) + (Math.random()*2 - 1)*0.02;
+  }
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  noise.loop = true;
+
+  const bp = ctx.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.frequency.value = 500;    // airy
+  bp.Q.value = 0.7;
+
+  // Subtle shimmer via slow LFO on filter freq
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.frequency.value = 0.08;  // very slow
+  lfoGain.gain.value = 120;    // mod amount (Hz)
+  lfo.connect(lfoGain);
+  lfoGain.connect(bp.frequency);
+  lfo.start();
+
+  noise.connect(bp);
+  bp.connect(whisperGain);
+  noise.start();
+}
+
+/* ---- Gold chime (2 oscillators + envelope) ---- */
+function playChime(){
+  ensureCtx();
+  const t0 = ctx.currentTime;
+
+  // Carillon vibe: two tones, quick attack, silky decay
+  const o1 = ctx.createOscillator();
+  const o2 = ctx.createOscillator();
+  const g  = ctx.createGain();
+
+  o1.type = "sine";     o1.frequency.value = 880;   // A5
+  o2.type = "triangle"; o2.frequency.value = 1320;  // E6 (perfect 5th up)
+
+  // tiny detune for richness
+  o1.detune.value = -4;
+  o2.detune.value = +3;
+
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(0.9, t0 + 0.01);   // fast attack
+  g.gain.exponentialRampToValueAtTime(0.001, t0 + 1.2);  // decay
+
+  o1.connect(g); o2.connect(g); g.connect(masterGain);
+  o1.start(t0); o2.start(t0);
+  o1.stop(t0 + 1.3); o2.stop(t0 + 1.3);
+}
+
+/* ---- Gesture-anywhere unlock (iOS policy compliant) ---- */
+let audioUnlocked = false;
+function onFirstGesture(){
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  unlockAudioCtx();
+}
+['pointerdown','pointermove','touchstart','keydown','wheel','scroll'].forEach(evt=>{
+  window.addEventListener(evt, onFirstGesture, { once:true, passive:true });
+});
+
+/* ---- Hook your existing UI to playChime() ---- */
+// 1) Wherever you previously played the reveal chime:
+function playRevealChime(){
+  onFirstGesture();            // make sure context is unlocked
+  playChime();
+}
+
+// 2) Wire this into your buttons/icons, e.g.:
+document.addEventListener('click', (e)=>{
+  const el = e.target.closest('.sound'); // your gold 🎧 buttons
+  if (el) {
+    e.preventDefault();
+    playRevealChime();
+  }
+});
 <script>
 /* ========= CONFIG ========= */
 /* Direct-stream Google Drive links */
