@@ -297,21 +297,6 @@ function pulseScore(){
       }
     });
   });
-@keyframes btnPulseGreen {
-  0%   { box-shadow: 0 0 0 0 rgba(64,255,140,0.00) }
-  40%  { box-shadow: 0 0 20px 4px rgba(64,255,140,0.45) }
-  60%  { box-shadow: 0 0 26px 6px rgba(64,255,140,0.65) }
-  100% { box-shadow: 0 0 0 0 rgba(64,255,140,0.00) }
-}
-.btn.success{
-  background: linear-gradient(180deg, var(--slime), #1be173);
-  color: #0b0b0f;
-  animation: btnPulseGreen .9s ease-out;
-  border: 1px solid rgba(64,255,140,.55);
-}
-.btn.success:disabled{
-  opacity: .95;
-  cursor: default;
 }
   resetBtn.addEventListener('click',()=>{
     score = 0; scored = Array(quiz.length).fill(false); updateScore();
